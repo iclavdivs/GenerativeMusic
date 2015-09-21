@@ -70,15 +70,23 @@ class Function:
     def evalOperand(self, index, list):
         operand = list[index]
 
-        arg1 = list[index -1 ]
-        arg2 = list[index + 1]
-        result = performOp(operand, arg1, arg2) #TODO: performOp uses switch logic to choose +,-,/,*. Maybe use a factory design?
-        evaluatedList = list[0:index -1] + result + list[index+2:len(list)]
+        arg1 = float(list[index -1 ])
+        arg2 = float(list[index + 1])
+        result = self.performOp(operand, arg1, arg2) #TODO: performOp uses switch logic to choose +,-,/,*. Maybe use a factory design?
+        evaluatedList = list[0:index -1] + [result] + list[index+2:len(list)]
         list = evaluatedList
         return result
 
     def performOp(self, operand, arg1, arg2):
-        return 1
+        if operand == '+':
+            return arg1 + arg2
+        elif operand == '-':
+            return arg1 - arg2
+        elif operand == '*':
+            return arg1 * arg2
+        elif operand == '/':
+            return arg1 / arg2
+        #TODO: define unrecognized return?
 
     # assumes list is perfectly parsed e.g. ['1','+','2'] and formatted, with no hanging operators
     # returns result of all operations
@@ -119,4 +127,6 @@ class Function:
                 i += 1
         # TODO: CHECK THAT LIST IS PROPERLY EVALUATED ie LENGTH = 1
         return list[0]
+
+    # TODO: add design such that as new functions are added to subclass, they can be added to the parsing
 
