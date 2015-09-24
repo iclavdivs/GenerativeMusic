@@ -43,3 +43,10 @@ class FunctionTests(unittest.TestCase):
         equation = self.function.simplifyEquation(equation, operandList)
 
         self.assertEquals(equation, ['3.0'])
+
+    def test_evalFourArith(self):
+        equation  = ['1.0', '+', '1.0', '*', '2.0', '/', '0.5', '-', '2.0']
+
+        equation = self.function.evalFourArith(equation)
+
+        self.assertEquals(equation, '3.0')
