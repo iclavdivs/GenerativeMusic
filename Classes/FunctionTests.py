@@ -13,18 +13,33 @@ class FunctionTests(unittest.TestCase):
         self.assertEqual(self.function.sin(0), math.sin(0))
 
     def test_performOp(self):
-        x = 1
-        y = 2
+        x = 1.0
+        y = 2.0
         self.assertEquals(self.function.performOp('+', x, y), x + y)
         self.assertEquals(self.function.performOp('-', x, y), x - y)
         self.assertEquals(self.function.performOp('*', x, y), x * y)
         self.assertEquals(self.function.performOp('/', x, y), x / y)
 
-    def test_evalOperand(self):
+    # def test_evalOperand(self):
+    #
+    #     equation  = ['1', '+', '1', '*', '2']
+    #     #self.assertEquals(self.function.evalOperand(equation.index('*'), equation), 1 * 2 )
+    #     equation = self.function.evalOperand(equation.index('*'),equation)
+    #     self.assertEquals(equation, ['1', '+', '2.0'])
+    #     #self.assertNotEquals(self.function.evalOperand(equation.index('+'), equation), 1 + 2 )
+    #     equation = self.function.evalOperand(equation.index('+'), equation)
+    #     self.assertEquals(equation, ['2.0'])
 
-        equation  = ['1', '+', '1', '*', '2']
-        self.assertEquals(self.function.evalOperand(equation.index('*'), equation), 1 * 2 )
-        self.assertNotEquals(self.function.evalOperand(equation.index('*'), equation), 1 + 1 * 2 )
 
-        self.assertEquals(equation, [1 * 2])
+    def test_simplifyEquations(self):
+        equation  = ['1.0', '+', '1.0', '*', '2.0', '/', '0.5', '-', '2.0']
+        operandList = ['*','/']
 
+        equation  = self.function.simplifyEquation(equation, operandList)
+
+        self.assertEquals(equation, ['1.0','+','4.0','-','2.0'])
+
+        operandList = ['+','-']
+        equation = self.function.simplifyEquation(equation, operandList)
+
+        self.assertEquals(equation, ['3.0'])

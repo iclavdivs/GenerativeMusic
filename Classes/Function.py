@@ -65,17 +65,17 @@ class Function:
     #     assumes that index is a value in the interior of the list, assumes list is >= 3
     #     assumes list is perfecctly parsed e.g. ['1','+','2']
     #     modifies list with the result of the operation
-    #     returns result of operation
+    #     returns modified list, with result of operation
 
-    def evalOperand(self, index, list):
-        operand = list[index]
+    #deprecated
+    def evalOperand(self, index, equation):
+        operand = equation[index]
 
-        arg1 = float(list[index -1 ])
-        arg2 = float(list[index + 1])
+        arg1 = float(equation[index -1 ])
+        arg2 = float(equation[index + 1])
         result = self.performOp(operand, arg1, arg2) #TODO: performOp uses switch logic to choose +,-,/,*. Maybe use a factory design?
-        evaluatedList = list[0:index -1] + [result] + list[index+2:len(list)]
-        list = evaluatedList
-        return result
+        equation = equation[0:index -1] + [str(result)] + equation[index+2:len(equation)]
+        return equation
 
     def performOp(self, operand, arg1, arg2):
         if operand == '+':
@@ -88,22 +88,37 @@ class Function:
             return arg1 / arg2
         #TODO: define unrecognized return?
 
+    # operandList is a list of operations to be performed with the same priorit e.g. */ and -+ can be performed at the same time
+    # equation is a  perfectly parsed list representing an equation e.g. ['1','+','2'] and formatted, with no hanging operators
+    # returns a simplified equation with every operator in the operandList evaluated
+
+    def simplifyEquation(self, equation, operandList):
+        workingEquation = []
+        stack = []
+        for i in range(len(equation)):
+            if equation[i] in operandList:
+                stack.append(equation[i])
+            elif stack:
+                result = self.performOp(stack.pop(), float(workingEquation.pop()), float(equation[i]))
+                workingEquation.append(str(result))
+            else:
+                workingEquation.append(equation[i])
+
+        return workingEquation
+
     # assumes list is perfectly parsed e.g. ['1','+','2'] and formatted, with no hanging operators
     # returns result of all operations
     # TODO: write unit tests
-    def evalFourArith(self, list): #TODO: Add self
+    def evalFourArith(self, equation): #TODO: Add self
         # TODO: Add support for '^'
         # eval */ first
-        for i in range(len(list)):
-            if list[i] in ['*','/']:
-                evalOperand(i,list) #updates list with evaluation
+        equation = self.simplifyEquation(equation, ['*', '/'])
 
         # eval +- second
-        for i in range(len(list)):
-            if list[i] in ['-','+']:
-                evalOperand(i,list) #updates list with evaluation
+        equation = self.simplifyEquation(equation, ['-','+'])
+
         # TODO: throw error if not entirely evaluated, meaning if list length > 1
-        return list[0]
+        return equation.pop()
 
     # Assumes list is a perfectly formatted arithmetic equation with matching parens
     def evalParenthesis(self, list):
@@ -130,3 +145,4 @@ class Function:
 
     # TODO: add design such that as new functions are added to subclass, they can be added to the parsing
 
+    #TODO: convert all integers in equations into floating point before processing
