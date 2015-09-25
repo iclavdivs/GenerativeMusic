@@ -50,3 +50,14 @@ class FunctionTests(unittest.TestCase):
         equation = self.function.evalFourArith(equation)
 
         self.assertEquals(equation, '3.0')
+
+    def test_evalParenthesis(self):
+        equation  = ['(', '1.0', '+', '1.0', '*', '2.0', '/', '0.5', '-', '2.0',')']
+        equation2 = ['(', '1.0', ')']
+        equation3 = ['1', '+', '3', '*', '(', '1.0', '+', '1.0', '*', '2.0', '/', '0.5', '-', '2.0',')']
+        equation4 = ['(', '4.0','+','3.0','*','3.0',')','-','4','*','(','1.0','+','8','*','(','1.0','+','5.0',')',')']
+
+        self.assertEquals(self.function.evalParenthesis(equation), '3.0')
+        self.assertEquals(self.function.evalParenthesis(equation2), '1.0')
+        self.assertEquals(self.function.evalParenthesis(equation3), str(float( 1+ 3*(1.0+1.0*2.0/0.5-2.0))))
+        self.assertEquals(self.function.evalParenthesis(equation4), str(float((4.0+3.0*3.0)-4*(1.0+8*(1.0+5.0)))))

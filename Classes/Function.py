@@ -121,6 +121,7 @@ class Function:
         return equation.pop()
 
     # Assumes list is a perfectly formatted arithmetic equation with matching parens
+    # returns evaluated equation
     def evalParenthesis(self, list):
         leftParenStack = [0]
         while (len(leftParenStack) > 0 ):
@@ -132,17 +133,20 @@ class Function:
                     leftParenStack.append(i)
                 elif list[i] == ')':
                     # peak the top of the stack
-                    idx1 = leftParenStack.index(len(leftParenStack) - 1)
+                    idx1 = leftParenStack[len(leftParenStack) - 1]
                     # evaluate the 4operand arithmetic function
-                    result = evalFourArith(list[idx1:i]) # TODO: add self
+                    result = self.evalFourArith(list[idx1:i]) 
                     # append evaluated parenthesis to list
-                    list = list[0:idx1] + result + list[i+1:]
+                    list = list[0:idx1] + [str(result)] + list[i+1:]
                     # TODO: check if list[idx1 - 1] is a function, after adding function support
                     someBooleanToContinueLoop = False
                 i += 1
         # TODO: CHECK THAT LIST IS PROPERLY EVALUATED ie LENGTH = 1
-        return list[0]
+        # After processing all the parentheses, only a basic four operation arithmetic equation is left
+        return self.evalFourArith(list)
 
     # TODO: add design such that as new functions are added to subclass, they can be added to the parsing
 
     #TODO: convert all integers in equations into floating point before processing
+    #TODO: Add support for negative numbers
+    #TODO: Add debug logging
